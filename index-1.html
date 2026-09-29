@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#080b13" id="meta-theme-color">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <meta name="description" content="Rotina no Controle — Plataforma Integrada de Rotina e Nutrição Inteligente.">
+  <title>Rotina no Controle — Plataforma Integrada de Rotina e Organização</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 500:'#10b981', 600:'#059669', 700:'#047857' },
+            accent:'#ec4899',
+            purple:'#8b5cf6',
+            cyan:'#06b6d4'
+          },
+          boxShadow: {
+            glow: '0 0 45px rgba(139,92,246,.2)',
+            emeraldGlow: '0 0 35px rgba(16,185,129,.2)'
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <style>
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:Inter,system-ui,sans-serif;
+      background:#080b13;
+      color:#f3f4f6;
+      -webkit-tap-highlight-color:transparent;
+    }
+    button,input,select,textarea{font:inherit}
+    button{touch-action:manipulation}
+    .glass{
+      background:rgba(15,20,32,.78);
+      border:1px solid rgba(255,255,255,.08);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+    }
+    .glass-strong{
+      background:rgba(12,17,28,.94);
+      border:1px solid rgba(255,255,255,.1);
+      backdrop-filter:blur(22px);
+      -webkit-backdrop-filter:blur(22px);
+    }
+    .gradient{
+      background:linear-gradient(135deg,#ec4899 0%,#8b5cf6 48%,#3b82f6 100%);
+    }
+    .gradient-text{
+      background:linear-gradient(135deg,#f472b6,#a78bfa,#60a5fa);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .glow{
+      box-shadow:0 0 45px rgba(139,92,246,.18);
+    }
+    ::-webkit-scrollbar{width:5px;height:5px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:#263044;border-radius:999px}
+    input[type=time]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.65}
+    input:focus,select:focus,textarea:focus{outline:none}
+    .page-enter{animation:pageIn .35s ease both}
+    @keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .float{animation:float 5s ease-in-out infinite}
+    @keyframes float{50%{transform:translateY(-6px)}}
+    .pulse-soft{animation:pulseSoft 2.5s ease-in-out infinite}
+    @keyframes pulseSoft{50%{box-shadow:0 0 0 8px rgba(139,92,246,0)}}
+    .toast-in{animation:toastIn .25s ease both}
+    @keyframes toastIn{from{opacity:0;transform:translate(-50%,-12px)}to{opacity:1;transform:translate(-50%,0)}}
+    .toast-out{animation:toastOut .25s ease both}
+    @keyframes toastOut{to{opacity:0;transform:translate(-50%,-12px)}}
+    .task-done .task-title{text-decoration:line-through;opacity:.45}
+    .safe-bottom{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+    .nav-safe{padding-bottom:max(8px,env(safe-area-inset-bottom))}
+    @media(min-width:768px){
+      .app-shell{max-width:760px}
+    }
+    .label{display:block;font-size:10px;font-weight:600;color:#9ca3af;margin-bottom:6px}
+    .input{
+      width:100%;background:rgba(3,7,18,.72);border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;padding:11px 13px;color:#fff;font-size:12px;transition:.2s;
+    }
+    .input::placeholder{color:#4b5563}
+    .input:focus{border-color:rgba(139,92,246,.65);box-shadow:0 0 0 3px rgba(139,92,246,.08)}
+    .field-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#4b5563;font-size:12px}
+    .nav-btn{height:66px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#5f6878;font-size:10px;font-weight:600;transition:.2s;border-radius:15px}
+    .nav-btn i{font-size:16px}
+    .nav-btn.active{color:#34d399;background:rgba(16,185,129,.07)}
+    .nav-btn:hover{color:#d1d5db}
+
+    /* ===== TEMA CLARO / ESCURO ===== */
+    html.light body{background:#f4f7fb;color:#111827}
+    html.light .glass{background:rgba(255,255,255,.82);border-color:rgba(15,23,42,.08);}
+    html.light .glass-strong{background:rgba(255,255,255,.96);border-color:rgba(15,23,42,.10);}
+    html.light .input{background:rgba(255,255,255,.92);border-color:rgba(15,23,42,.10);color:#111827}
+    html.light .input::placeholder{color:#9ca3af}
+    html.light .field-icon{color:#9ca3af}
+    html.light .text-gray-100{color:#111827!important}
+    html.light .text-gray-200{color:#1f2937!important}
+    html.light .text-gray-300{color:#374151!important}
+    html.light .text-gray-400{color:#6b7280!important}
+    html.light .text-gray-500{color:#6b7280!important}
+    html.light .text-gray-600{color:#9ca3af!important}
+    html.light .text-gray-700{color:#6b7280!important}
+    html.light .bg-\[\#080b13\]{background:#f4f7fb!important}
+    html.light .bg-black\/80{background:rgba(255,255,255,.78)!important}
+    html.light .border-white\/5{border-color:rgba(15,23,42,.07)!important}
+    html.light .border-white\/10{border-color:rgba(15,23,42,.10)!important}
+    html.light .bg-white\/\[\.03\]{background:rgba(15,23,42,.03)!important}
+    html.light .bg-white\/\[\.04\]{background:rgba(15,23,42,.04)!important}
+    html.light .bg-white\/\[\.05\]{background:rgba(15,23,42,.05)!important}
+    html.light .bg-white\/\[\.06\]{background:rgba(15,23,42,.06)!important}
+    html.light .bg-white\/\[\.08\]{background:rgba(15,23,42,.08)!important}
+    html.light .shadow-purple-900\/30{--tw-shadow-color:rgba(109,40,217,.15)!important}
+    html.light .nav-btn{color:#6b7280}
+    html.light .nav-btn:hover{color:#374151}
+    html.light input[type=time]::-webkit-calendar-picker-indicator{filter:none}
+    .theme-toggle{position:relative;overflow:hidden}
+    /* ===== ALARMES ===== */
+    .alarm-modal-backdrop{background:rgba(0,0,0,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+    html.light .alarm-modal-backdrop{background:rgba(15,23,42,.28)}
+    .range-input{width:100%;accent-color:#10b981}
+    .alarm-mode-btn{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#9ca3af}
+    .alarm-mode-btn.active{border-color:rgba(16,185,129,.45);background:rgba(16,185,129,.12);color:#34d399;box-shadow:0 0 0 1px rgba(16,185,129,.08) inset}
+    html.light .alarm-mode-btn{border-color:rgba(15,23,42,.10);background:rgba(15,23,42,.04);color:#6b7280}
+    html.light .alarm-mode-btn.active{border-color:rgba(5,150,105,.35);background:rgba(16,185,129,.10);color:#047857}
+    .alarm-ring{animation:alarmRing .65s ease-in-out infinite alternate}
+    @keyframes alarmRing{from{transform:rotate(-4deg) scale(1)}to{transform:rotate(4deg) scale(1.05)}}
+  </style>
+</head>
+
+<body class="min-h-screen bg-[#080b13] text-gray-100 selection:bg-purple-500/30">
+  <div id="toast-container" class="fixed top-4 left-1/2 z-[100] w-[calc(100%-28px)] max-w-md pointer-events-none"></div>
+
+  <!-- AUTH SCREEN -->
+  <div id="auth-screen" class="fixed inset-0 z-[90] flex items-center justify-center p-4 bg-[#080b13] overflow-auto">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute -top-24 -left-20 w-72 h-72 bg-purple-600/15 blur-3xl rounded-full"></div>
+      <div class="absolute -bottom-24 -right-20 w-80 h-80 bg-blue-600/15 blur-3xl rounded-full"></div>
+    </div>
+
+    <div class="glass-strong glow w-full max-w-md rounded-[30px] p-6 sm:p-7 relative page-enter">
+      <div class="text-center mb-6">
+        <div class="w-[70px] h-[70px] mx-auto rounded-[22px] gradient flex items-center justify-center shadow-2xl shadow-purple-900/30 mb-4 float">
+          <i class="fa-solid fa-wand-magic-sparkles text-3xl text-white"></i>
+        </div>
+        <h1 class="text-2xl font-extrabold tracking-tight">Rotina <span class="gradient-text">no Controle</span></h1>
+        <p class="text-xs text-gray-400 mt-2">Sua rotina, nutrição e organização diária simplificadas.</p>
+      </div>
+
+      <div id="auth-view-initial" class="space-y-3.5">
+        <button type="button" onclick="showAuthStep('signup')" class="w-full py-3.5 rounded-2xl gradient text-white font-bold text-sm shadow-xl shadow-purple-900/20 active:scale-[.98] transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-user-plus text-sm"></i>
+          <span>CRIAR CONTA</span>
+        </button>
+
+        <button type="button" onclick="showAuthStep('login')" class="w-full py-3.5 rounded-2xl bg-white/[.06] hover:bg-white/[.1] border border-white/10 text-white font-bold text-sm active:scale-[.98] transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-right-to-bracket text-sm text-purple-400"></i>
+          <span>ENTRAR</span>
+        </button>
+
+        <div class="flex items-center gap-3 my-2">
+          <div class="h-px bg-white/10 flex-1"></div>
+          <span class="text-[10px] uppercase tracking-widest text-gray-500 font-semibold">ou</span>
+          <div class="h-px bg-white/10 flex-1"></div>
+        </div>
+
+        <button type="button" onclick="enterAsGuest()" class="w-full py-3.5 rounded-2xl bg-emerald-600/95 hover:bg-emerald-500 text-white font-bold text-sm active:scale-[.98] transition border border-emerald-400/20 shadow-lg shadow-emerald-950/30 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-bolt text-amber-300"></i>
+          <span>CONTINUAR COMO CONVIDADO</span>
+        </button>
+      </div>
+
+      <div id="auth-view-signup" class="hidden space-y-3.5">
+        <div class="flex items-center justify-between mb-2">
+          <button type="button" onclick="showAuthStep('initial')" class="text-xs text-gray-400 hover:text-white flex items-center gap-1">
+            <i class="fa-solid fa-arrow-left"></i> Voltar
+          </button>
+          <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">Criar Conta</span>
+        </div>
+
+        <form onsubmit="handleSignupSubmit(event)" class="space-y-3">
+          <div>
+            <label class="label">Nome de usuário</label>
+            <div class="relative">
+              <i class="fa-solid fa-user field-icon"></i>
+              <input id="signup-username" type="text" autocomplete="username" placeholder="Digite seu nome de usuário" class="input pl-10">
+            </div>
+          </div>
+
+          <div>
+            <label class="label">Gmail</label>
+            <div class="relative">
+              <i class="fa-solid fa-envelope field-icon"></i>
+              <input id="signup-gmail" type="email" autocomplete="email" placeholder="seuemail@gmail.com" class="input pl-10">
+            </div>
+          </div>
+
+          <div>
+            <label class="label">Senha</label>
+            <div class="relative">
+              <i class="fa-solid fa-lock field-icon"></i>
+              <input id="signup-password" type="password" autocomplete="new-password" placeholder="Crie uma senha" class="input pl-10 pr-11">
+              <button type="button" onclick="togglePasswordVisibility('signup-password', 'signup-eye-1')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">
+                <i id="signup-eye-1" class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="label">Confirmar senha</label>
+            <div class="relative">
+              <i class="fa-solid fa-shield-halved field-icon"></i>
+              <input id="signup-confirm-password" type="password" autocomplete="new-password" placeholder="Confirme sua senha" class="input pl-10 pr-11">
+              <button type="button" onclick="togglePasswordVisibility('signup-confirm-password', 'signup-eye-2')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">
+                <i id="signup-eye-2" class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-3.5 rounded-2xl gradient text-white font-bold text-sm shadow-xl shadow-purple-900/20 active:scale-[.98] transition flex items-center justify-center gap-2 mt-4">
+            <span>Criar Conta e Entrar</span>
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+          </button>
+        </form>
+
+        <p class="text-center text-xs text-gray-400 mt-3">
+          Já tem uma conta? <button type="button" onclick="showAuthStep('login')" class="text-purple-400 font-semibold underline ml-1">Entrar</button>
+        </p>
+      </div>
+
+      <div id="auth-view-login" class="hidden space-y-3.5">
+        <div class="flex items-center justify-between mb-2">
+          <button type="button" onclick="showAuthStep('initial')" class="text-xs text-gray-400 hover:text-white flex items-center gap-1">
+            <i class="fa-solid fa-arrow-left"></i> Voltar
+          </button>
+          <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Entrar</span>
+        </div>
+
+        <form onsubmit="handleLoginSubmit(event)" class="space-y-3">
+          <div>
+            <label class="label">Gmail</label>
+            <div class="relative">
+              <i class="fa-solid fa-envelope field-icon"></i>
+              <input id="login-gmail" type="email" autocomplete="email" placeholder="seuemail@gmail.com" class="input pl-10">
+            </div>
+          </div>
+
+          <div>
+            <label class="label">Senha</label>
+            <div class="relative">
+              <i class="fa-solid fa-lock field-icon"></i>
+              <input id="login-password" type="password" autocomplete="current-password" placeholder="••••••••" class="input pl-10 pr-11">
+              <button type="button" onclick="togglePasswordVisibility('login-password', 'login-eye')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">
+                <i id="login-eye" class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-xl shadow-emerald-950/30 active:scale-[.98] transition flex items-center justify-center gap-2 mt-4">
+            <span>Entrar no aplicativo</span>
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+          </button>
+        </form>
+
+        <p class="text-center text-xs text-gray-400 mt-3">
+          Ainda não tem conta? <button type="button" onclick="showAuthStep('signup')" class="text-emerald-400 font-semibold underline ml-1">Criar conta</button>
+        </p>
+      </div>
+
+      <p class="text-center text-[10px] text-gray-600 mt-5">Seus dados e preferências são mantidos de forma segura no seu navegador.</p>
+    </div>
+  </div>
+
+  <!-- MODAL DE PERFIL DO USUÁRIO -->
+  <div id="profile-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="glass-strong glow w-full max-w-sm rounded-[28px] p-6 relative page-enter border border-white/10">
+      <button type="button" onclick="closeProfileModal()" class="absolute right-4 top-4 w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="text-center mb-5">
+        <div class="w-16 h-16 mx-auto rounded-full gradient flex items-center justify-center text-white text-2xl font-bold mb-3 shadow-lg shadow-purple-900/30" id="profile-avatar-icon">
+          <i class="fa-solid fa-user"></i>
+        </div>
+        <h3 class="text-lg font-extrabold" id="profile-display-name">Carregando...</h3>
+        <span id="profile-badge-type" class="inline-block mt-1 px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-purple-500/20 text-purple-300 border border-purple-500/30">
+          Usuário
+        </span>
+      </div>
+
+      <div class="space-y-3 bg-black/30 rounded-2xl p-4 border border-white/5 mb-5 text-xs">
+        <div id="profile-row-username" class="flex justify-between items-center py-1.5 border-b border-white/5">
+          <span class="text-gray-400">Nome de usuário:</span>
+          <span class="font-bold text-gray-100" id="profile-val-username">-</span>
+        </div>
+        <div id="profile-row-gmail" class="flex justify-between items-center py-1.5 border-b border-white/5">
+          <span class="text-gray-400">Gmail:</span>
+          <span class="font-bold text-gray-100 truncate max-w-[180px]" id="profile-val-gmail">-</span>
+        </div>
+        <div class="flex justify-between items-center py-1.5">
+          <span class="text-gray-400">Tipo de conta:</span>
+          <span class="font-bold text-emerald-400" id="profile-val-type">-</span>
+        </div>
+      </div>
+
+      <button type="button" onclick="logout()" class="w-full py-3 rounded-2xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 font-bold text-xs transition flex items-center justify-center gap-2">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Sair da conta</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- AVISO DE ALARME DISPARADO -->
+  <div id="alarm-ring-modal" class="fixed inset-0 z-[120] hidden flex items-center justify-center p-4 alarm-modal-backdrop">
+    <div class="glass-strong w-full max-w-sm rounded-[30px] p-6 text-center border border-emerald-500/20 shadow-2xl">
+      <div class="w-20 h-20 mx-auto rounded-[26px] bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-3xl mb-4 alarm-ring"><i class="fa-solid fa-bell"></i></div>
+      <div class="text-[10px] uppercase tracking-[.2em] text-emerald-400 font-bold">Alarme da rotina</div>
+      <h3 id="ring-task-title" class="text-xl font-extrabold mt-2">Tarefa</h3>
+      <div id="ring-task-time" class="text-4xl font-extrabold mt-2">08:00</div>
+      <p id="ring-mode-text" class="text-xs text-gray-500 mt-2">Alarme ativo</p>
+      <button type="button" onclick="stopAlarm()" class="w-full mt-6 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition"><i class="fa-solid fa-stop mr-2"></i> Parar alarme</button>
+    </div>
+  </div>
+
+  <!-- MAIN APP CONTAINER -->
+  <div id="app" class="hidden">
+    <header class="sticky top-0 z-50 glass-strong border-x-0 border-t-0">
+      <div class="app-shell mx-auto px-4 py-3 flex items-center justify-between">
+        <button type="button" onclick="switchTab('rotina')" class="flex items-center gap-3 text-left">
+          <div class="w-10 h-10 rounded-[14px] gradient flex items-center justify-center shadow-lg shadow-purple-900/20">
+            <i class="fa-solid fa-wand-magic-sparkles text-white"></i>
+          </div>
+          <div>
+            <div class="font-extrabold leading-none text-sm sm:text-base">Rotina <span class="gradient-text">no Controle</span></div>
+            <div id="user-greeting" class="text-[10px] text-gray-500 mt-1">Olá, Convidado</div>
+          </div>
+        </button>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="installPWA()" id="install-app-button" class="hidden w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/15 text-emerald-400 hover:bg-emerald-500/15 transition flex items-center justify-center" title="Instalar no celular" aria-label="Instalar no celular">
+            <i class="fa-solid fa-download text-sm"></i>
+          </button>
+          <button type="button" onclick="toggleTheme()" id="theme-toggle" class="theme-toggle w-10 h-10 rounded-xl bg-white/[.04] border border-white/5 text-amber-300 hover:text-amber-200 hover:bg-amber-500/10 transition flex items-center justify-center" title="Alternar tema">
+            <i id="theme-icon" class="fa-solid fa-sun text-base"></i>
+          </button>
+          <button type="button" onclick="openProfileModal()" class="w-10 h-10 rounded-xl bg-white/[.04] border border-white/5 text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 transition flex items-center justify-center" title="Meu Perfil">
+            <i class="fa-solid fa-circle-user text-base"></i>
+          </button>
+          <button type="button" onclick="logout()" class="w-10 h-10 rounded-xl bg-white/[.04] border border-white/5 text-gray-400 hover:text-red-400 hover:border-red-500/20 transition flex items-center justify-center" title="Sair">
+            <i class="fa-solid fa-right-from-bracket text-sm"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- AVISO DE INSTALAÇÃO DO APP -->
+    <div id="install-app-banner" class="app-shell mx-auto px-4 pt-3">
+      <div class="relative overflow-hidden rounded-2xl border border-emerald-400/20 bg-gradient-to-r from-emerald-500/10 via-purple-500/10 to-cyan-500/10 px-4 py-3 shadow-lg">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 shrink-0 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center">
+            <i class="fa-solid fa-mobile-screen-button"></i>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="text-sm font-extrabold">Instale o Rotina no Controle</div>
+            <div class="text-[11px] text-gray-400 mt-0.5">Tenha o app na tela inicial para abrir mais rápido.</div>
+          </div>
+          <button type="button" onclick="installPWA()" class="shrink-0 px-3 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-extrabold transition active:scale-95">
+            INSTALAR
+          </button>
+          <button type="button" onclick="dismissInstallBanner()" class="shrink-0 w-7 h-7 rounded-lg text-gray-500 hover:text-white hover:bg-white/10 transition" aria-label="Fechar aviso">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <main class="app-shell mx-auto w-full px-4 pt-5 safe-bottom">
+      
+      <!-- ROTINA SECTION -->
+      <section id="tab-rotina" class="space-y-4 page-enter">
+        <div class="glass rounded-[24px] p-5 overflow-hidden relative glow">
+          <div class="absolute -right-12 -top-16 w-40 h-40 bg-purple-600/10 blur-3xl rounded-full"></div>
+          <div class="relative">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/15 text-emerald-400 text-[10px] font-bold uppercase tracking-wide">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-soft"></span> Otimização inteligente
+            </div>
+            <h2 class="text-2xl font-extrabold mt-4">Sua rotina no controle.</h2>
+            <p class="text-xs leading-5 text-gray-400 mt-2 max-w-lg">Organize suas tarefas e deixe o Rotina no Controle sequenciar o seu dia de forma produtiva.</p>
+            <button type="button" onclick="otimizarRotina()" class="mt-4 w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 font-bold text-sm transition active:scale-[.98] shadow-lg shadow-emerald-950/40 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>Otimizar minha rotina
+            </button>
+          </div>
+        </div>
+
+        <div id="ai-routine-feedback" class="hidden glass rounded-2xl p-4 border border-emerald-500/20 bg-emerald-950/20">
+          <div class="flex gap-3">
+            <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-robot text-sm"></i></div>
+            <div><div class="text-xs font-bold text-emerald-400 mb-1">Sugestão do Rotina no Controle</div><div id="ai-routine-text" class="text-xs text-gray-300 leading-5"></div></div>
+          </div>
+        </div>
+
+        <div class="glass rounded-[22px] p-4">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center"><i class="fa-solid fa-plus"></i></div>
+            <div><h3 class="text-sm font-bold">Nova tarefa</h3><p class="text-[10px] text-gray-500">Adicione algo ao seu dia</p></div>
+          </div>
+          <div class="space-y-3">
+            <div>
+              <label class="label">O que precisa fazer?</label>
+              <input id="task-input" class="input" placeholder="Ex: Treinar, estudar, ler um livro...">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div><label class="label">Horário / Alarme</label><input id="task-time" type="time" value="08:00" class="input"></div>
+              <div><label class="label">Prioridade</label><select id="task-priority" class="input"><option value="Baixa">🟢 Baixa</option><option value="Média" selected>🟠 Média</option><option value="Alta">🔴 Alta</option></select></div>
+            </div>
+
+            <div class="rounded-2xl bg-white/[.03] border border-white/5 p-3.5 space-y-3">
+              <div class="flex items-center justify-between gap-3">
+                <div>
+                  <div class="text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-bell text-emerald-400"></i> Configurar alarme</div>
+                  <div class="text-[9px] text-gray-500 mt-0.5">Defina o som e o volume antes de salvar.</div>
+                </div>
+                <label class="flex items-center gap-2 text-[10px] font-semibold text-gray-400 cursor-pointer">
+                  <span>Ativo</span>
+                  <input id="task-alarm-enabled" type="checkbox" class="w-5 h-5 accent-emerald-500" checked>
+                </label>
+              </div>
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="label !mb-0">Volume</label>
+                  <span id="task-alarm-volume-value" class="text-xs font-bold text-emerald-400">80%</span>
+                </div>
+                <input id="task-alarm-volume" type="range" min="0" max="100" value="80" class="range-input" oninput="updateTaskAlarmVolumeLabel(this.value)">
+              </div>
+              <div>
+                <label class="label">Modo do alarme</label>
+                <div class="grid grid-cols-1 gap-2">
+                  <button type="button" id="task-alarm-mode-sound" onclick="setTaskAlarmMode('sound')" class="alarm-mode-btn active rounded-xl py-2.5 text-[10px] font-bold flex items-center justify-center gap-2"><i class="fa-solid fa-volume-high"></i><span>Som</span></button>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" onclick="testTaskAlarm()" class="py-2.5 rounded-xl bg-white/[.05] hover:bg-white/[.08] border border-white/5 text-[10px] font-bold transition"><i class="fa-solid fa-volume-high mr-1"></i> Testar som</button>
+                <button type="button" onclick="requestAlarmNotificationPermission(true)" id="notification-permission-button" class="py-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/15 border border-emerald-500/15 text-emerald-300 text-[10px] font-bold transition"><i class="fa-solid fa-bell mr-1"></i> Ativar aviso</button>
+              </div>
+              <div id="notification-status" class="text-[9px] text-gray-500 text-center">Avisos do sistema: verificando...</div>
+            </div>
+
+            <button type="button" onclick="addTarefa()" class="w-full py-3 rounded-2xl bg-white/[.05] hover:bg-white/[.08] border border-white/5 text-sm font-semibold transition active:scale-[.98]">+ Adicionar à lista</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between px-1 mb-2.5">
+            <h3 class="text-[11px] font-bold text-gray-500 uppercase tracking-[.16em]">Minhas tarefas</h3>
+            <span id="task-counter" class="text-[10px] text-gray-600">0 itens</span>
+          </div>
+          <div id="taskList" class="space-y-2"></div>
+        </div>
+      </section>
+
+      <!-- NUTRIÇÃO SECTION -->
+      <section id="tab-nutricao" class="hidden space-y-4 page-enter">
+        <div class="glass rounded-[24px] p-5">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/15 text-blue-400 text-[10px] font-bold uppercase tracking-wide">
+            <i class="fa-solid fa-leaf"></i> Nutrição inteligente
+          </div>
+          <h2 class="text-2xl font-extrabold mt-4">Monte suas refeições.</h2>
+          <p class="text-xs leading-5 text-gray-400 mt-2">
+            Escreva o que você quer comer e o app transforma seu pedido em uma receita melhorada.
+          </p>
+        </div>
+
+        <div id="meal-cards" class="space-y-4"></div>
+
+        <button type="button" onclick="adicionarRefeicaoPersonalizada()"
+          class="w-full py-3 rounded-2xl bg-blue-600 hover:bg-blue-500 font-bold text-sm transition active:scale-[.98] flex items-center justify-center gap-2">
+          <i class="fa-solid fa-plus"></i> Adicionar refeição
+        </button>
+      </section>
+
+      <!-- SCANNER SECTION -->
+      <section id="tab-scanner" class="hidden space-y-4 page-enter">
+        <div class="glass rounded-[24px] p-5 text-center">
+          <div class="w-16 h-16 mx-auto rounded-[20px] bg-purple-500/10 border border-purple-500/15 text-purple-400 flex items-center justify-center text-2xl mb-4">
+            <i class="fa-solid fa-camera"></i>
+          </div>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/15 text-emerald-300 text-[10px] font-bold uppercase tracking-wide">
+            <i class="fa-solid fa-utensils"></i> Somente alimentos
+          </div>
+          <h2 class="text-2xl font-extrabold mt-3">Scanner de ingredientes</h2>
+          <p class="text-xs leading-5 text-gray-400 mt-2 mb-5">
+            Tire uma foto dos alimentos que você tem. A IA identifica os ingredientes, cria uma receita e mostra uma estimativa de calorias por porção.
+          </p>
+          <input id="camera-input" type="file" accept="image/*" capture="environment" class="hidden" onchange="processarFoto(event)">
+          <input id="gallery-input" type="file" accept="image/*" class="hidden" onchange="processarFoto(event)">
+          <div class="grid grid-cols-2 gap-3">
+            <button type="button" onclick="document.getElementById('camera-input').click()" class="py-3 rounded-2xl bg-purple-600 hover:bg-purple-500 font-bold text-sm transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-camera"></i>Câmera
+            </button>
+            <button type="button" onclick="document.getElementById('gallery-input').click()" class="py-3 rounded-2xl bg-white/[.05] hover:bg-white/[.08] border border-white/5 font-bold text-sm transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-image"></i>Galeria
+            </button>
+          </div>
+          <div class="mt-4 text-[10px] text-gray-600">Objetos, pessoas e imagens que não contenham alimentos serão recusados.</div>
+        </div>
+
+        <div id="scanner-preview" class="hidden glass rounded-[22px] p-4">
+          <img id="scanned-img" class="w-full max-h-72 object-cover rounded-2xl border border-white/5" alt="Foto dos ingredientes">
+          <div id="scanner-status" class="mt-3 p-3 rounded-xl bg-purple-500/10 border border-purple-500/15 text-xs text-purple-200 flex gap-2 items-center">
+            <i class="fa-solid fa-spinner fa-spin text-purple-400"></i><span>Analisando alimentos...</span>
+          </div>
+          <div id="scanner-results" class="hidden mt-3"></div>
+        </div>
+      </section>
+
+      <!-- COMPRAS SECTION - separada do Scanner -->
+      <section id="tab-compras" class="hidden space-y-4 page-enter">
+        <div class="rounded-[24px] p-5 overflow-hidden relative" style="background:linear-gradient(145deg,rgba(249,115,22,.14),rgba(255,255,255,.035));border:1px solid rgba(249,115,22,.16)">
+          <div class="relative">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/15 text-orange-300 text-[10px] font-bold uppercase tracking-wide">
+              <i class="fa-solid fa-clipboard-list"></i> Antes de ir ao mercado
+            </div>
+            <h2 class="text-2xl font-extrabold mt-4">Prepare sua compra.</h2>
+            <p class="text-xs leading-5 text-gray-400 mt-2">Monte sua lista em casa e, quando chegar ao mercado, ative o modo de compra para marcar tudo.</p>
+            <div class="grid grid-cols-2 gap-2 mt-4">
+              <button type="button" onclick="focusShoppingInput()" class="py-3 rounded-2xl bg-orange-600 hover:bg-orange-500 font-bold text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-plus"></i>Criar lista</button>
+              <button type="button" onclick="openMarketMode()" class="py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 font-bold text-xs flex items-center justify-center gap-2"><i class="fa-solid fa-cart-shopping"></i>Estou no mercado</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass rounded-[24px] p-4">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-300 flex items-center justify-center"><i class="fa-solid fa-basket-shopping"></i></div>
+            <div><h3 class="text-sm font-bold">Adicionar à lista</h3><p class="text-[10px] text-gray-500">Preço não é obrigatório.</p></div>
+          </div>
+          <div class="grid grid-cols-[1fr_auto] gap-2">
+            <input id="shopping-item-input" class="input" placeholder="Ex: Arroz, sabonete, leite..." onkeydown="if(event.key==='Enter') addShoppingItem()">
+            <button type="button" onclick="addShoppingItem()" class="w-12 rounded-2xl bg-orange-600 font-bold flex items-center justify-center"><i class="fa-solid fa-plus"></i></button>
+          </div>
+          <div class="mt-2"><select id="shopping-category-input" class="input"><option>Mercado</option><option>Higiene</option><option>Limpeza</option><option>Bebidas</option><option>Outros</option></select></div>
+        </div>
+
+        <div class="glass rounded-[22px] p-4">
+          <div class="flex items-center justify-between mb-3"><div><h3 class="text-sm font-bold">Minha lista</h3><p id="shopping-counter" class="text-[10px] text-gray-500">0 itens</p></div><button type="button" onclick="clearShoppingList()" class="text-[10px] font-bold text-red-400 px-3 py-2 rounded-xl bg-red-500/5">Limpar</button></div>
+          <div id="shopping-list" class="space-y-2"></div>
+        </div>
+
+        <div id="shopping-market-view" class="hidden space-y-4">
+          <div class="rounded-[24px] p-5" style="background:linear-gradient(145deg,rgba(16,185,129,.12),rgba(255,255,255,.035));border:1px solid rgba(16,185,129,.18)">
+            <div class="flex items-center gap-3"><button type="button" onclick="closeMarketMode()" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10"><i class="fa-solid fa-arrow-left"></i></button><div><div class="text-[10px] uppercase tracking-widest text-emerald-300">Modo de compra</div><h2 class="text-xl font-extrabold">Estou no mercado 🛒</h2></div></div>
+            <div class="mt-4 flex items-end justify-between"><div><div id="market-progress-text" class="text-2xl font-extrabold">0 de 0</div><div class="text-[10px] text-gray-500">itens separados</div></div><button type="button" onclick="finishMarketMode()" class="px-3 py-2 rounded-xl bg-emerald-500/15 text-emerald-300 text-[10px] font-bold">Finalizar</button></div>
+            <div class="mt-3 h-2 bg-white/5 rounded-full overflow-hidden"><div id="market-progress-bar" class="h-full bg-emerald-400 rounded-full" style="width:0%"></div></div>
+          </div>
+          <div id="market-list" class="space-y-2"></div>
+        </div>
+      </section>
+
+      <!-- ASSISTENTE SECTION -->
+      <section id="tab-assistente" class="hidden page-enter">
+        <div class="glass rounded-[24px] p-4 h-[600px] flex flex-col">
+          <div class="flex items-center gap-3 pb-3 border-b border-white/5">
+            <div class="w-10 h-10 rounded-xl gradient flex items-center justify-center"><i class="fa-solid fa-robot"></i></div>
+            <div class="min-w-0 flex-1">
+              <h2 class="font-bold text-sm">Assistente Rotina no Controle</h2>
+              <div id="api-status-badge" class="text-[10px] text-gray-500">● Verificando conexão...</div>
+            </div>
+          </div>
+          <div id="chat-messages" class="flex-1 overflow-y-auto custom-scrollbar py-4 space-y-3"></div>
+          <div class="flex gap-2 pt-3 border-t border-white/5">
+            <input id="chat-input" class="input flex-1" placeholder="Pergunte sobre sua rotina ou receitas..." onkeydown="if(event.key==='Enter')sendChat()">
+            <button type="button" onclick="sendChat()" class="w-12 rounded-2xl gradient flex items-center justify-center active:scale-95 transition"><i class="fa-solid fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- NAVIGATION BAR -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 glass-strong border-x-0 border-b-0 nav-safe">
+      <div class="app-shell mx-auto grid grid-cols-5 px-1 pt-2">
+        <button type="button" id="nav-rotina" onclick="switchTab('rotina')" class="nav-btn active"><i class="fa-solid fa-calendar-check"></i><span>Rotina</span></button>
+        <button type="button" id="nav-nutricao" onclick="switchTab('nutricao')" class="nav-btn"><i class="fa-solid fa-utensils"></i><span>Nutrição</span></button>
+        <button type="button" id="nav-scanner" onclick="switchTab('scanner')" class="nav-btn"><i class="fa-solid fa-camera"></i><span>Scanner</span></button>
+        <button type="button" id="nav-compras" onclick="switchTab('compras')" class="nav-btn"><i class="fa-solid fa-cart-shopping"></i><span>Compras</span></button>
+        <button type="button" id="nav-assistente" onclick="switchTab('assistente')" class="nav-btn"><i class="fa-solid fa-comments"></i><span>Assistente</span></button>
+      </div>
+    </nav>
+  </div>
+
+<script>
+'use strict';
+
+const STORAGE = {
+  usersList: 'rotina_users_accounts_v4',
+  currentUser: 'rotina_current_session_v4',
+  tasks: 'rotina_tasks_v4',
+  menu: 'rotina_menu_v4',
+  chatHistory: 'rotina_chat_history_v4' // prefixo; a chave final é separada por Gmail
+};
+
+function safeGetStorage(key, defaultValue) {
+  try {
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : defaultValue;
+  } catch (e) {
+    console.warn(`[Rotina no Controle] Falha ao ler ${key}:`, e);
+    return defaultValue;
+  }
+}
+
+function safeSetStorage(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {
+    console.error(`[Rotina no Controle] Erro ao salvar ${key}:`, e);
+  }
+}
+
+let registeredUsers = safeGetStorage(STORAGE.usersList, []);
+let currentUser = safeGetStorage(STORAGE.currentUser, null);
+
+let tarefas = safeGetStorage(STORAGE.tasks, [
+  { id: 1, titulo: 'Café da manhã saudável', hora: '07:30', prioridade: 'Alta', feita: false },
+  { id: 2, titulo: 'Estudo / trabalho focado', hora: '08:30', prioridade: 'Média', feita: false },
+  { id: 3, titulo: 'Caminhada de 20 minutos', hora: '17:00', prioridade: 'Baixa', feita: false }
+]);
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
+
+function saveTasks() { safeSetStorage(STORAGE.tasks, tarefas); }
+
+function hashPassword(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash |= 0;
+  }
+  return 'h_' + Math.abs(hash).toString(36);
+}
+
+function isValidGmail(email) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(String(email).toLowerCase());
+}
+
+function showAuthStep(step) {
+  $('auth-view-initial').classList.toggle('hidden', step !== 'initial');
+  $('auth-view-signup').classList.toggle('hidden', step !== 'signup');
+  $('auth-view-login').classList.toggle('hidden', step !== 'login');
+}
+
+function togglePasswordVisibility(inputId, eyeId) {
+  const input = $(inputId);
+  if (!input) return;
+  input.type = input.type === 'password' ? 'text' : 'password';
+  $(eyeId).className = input.type === 'password' ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
+}
+
+function handleSignupSubmit(e) {
+  if (e) e.preventDefault();
+  
+  const username = $('signup-username').value.trim();
+  const gmail = $('signup-gmail').value.trim();
+  const password = $('signup-password').value;
+  const confirmPassword = $('signup-confirm-password').value;
+
+  if (!username) { showToast('Por favor, informe seu nome de usuário.', 'warning'); $('signup-username').focus(); return; }
+  if (!gmail) { showToast('Por favor, informe seu Gmail.', 'warning'); $('signup-gmail').focus(); return; }
+  if (!isValidGmail(gmail)) { showToast('Por favor, informe um endereço de Gmail/E-mail válido.', 'warning'); $('signup-gmail').focus(); return; }
+  if (!password) { showToast('Por favor, crie uma senha.', 'warning'); $('signup-password').focus(); return; }
+  if (password.length < 4) { showToast('A senha deve ter pelo menos 4 caracteres.', 'warning'); $('signup-password').focus(); return; }
+  if (!confirmPassword) { showToast('Por favor, confirme sua senha.', 'warning'); $('signup-confirm-password').focus(); return; }
+  if (password !== confirmPassword) { showToast('As senhas digitadas não correspondem.', 'warning'); $('signup-confirm-password').focus(); return; }
+
+  const existing = registeredUsers.find(u => u.gmail.toLowerCase() === gmail.toLowerCase());
+  if (existing) { showToast('Este Gmail já está cadastrado. Faça login ou use outro Gmail.', 'warning'); return; }
+
+  const newUser = { username: username, gmail: gmail, passwordHash: hashPassword(password), accountType: 'Usuário', isGuest: false };
+  registeredUsers.push(newUser);
+  safeSetStorage(STORAGE.usersList, registeredUsers);
+
+  currentUser = { username: newUser.username, gmail: newUser.gmail, accountType: 'Usuário', isGuest: false };
+  safeSetStorage(STORAGE.currentUser, currentUser);
+
+  openApp();
+  showToast(`Conta criada com sucesso! Bem-vindo(a), ${newUser.username}!`, 'success');
+}
+
+function handleLoginSubmit(e) {
+  if (e) e.preventDefault();
+
+  const gmail = $('login-gmail').value.trim();
+  const password = $('login-password').value;
+
+  if (!gmail) { showToast('Digite seu Gmail.', 'warning'); $('login-gmail').focus(); return; }
+  if (!password) { showToast('Digite sua senha.', 'warning'); $('login-password').focus(); return; }
+
+  const targetHash = hashPassword(password);
+  const user = registeredUsers.find(u => u.gmail.toLowerCase() === gmail.toLowerCase() && u.passwordHash === targetHash);
+
+  if (!user) { showToast('Gmail ou senha incorretos.', 'warning'); return; }
+
+  currentUser = { username: user.username, gmail: user.gmail, accountType: 'Usuário', isGuest: false };
+  safeSetStorage(STORAGE.currentUser, currentUser);
+
+  openApp();
+  showToast(`Login realizado! Bem-vindo(a) de volta, ${user.username}!`, 'success');
+}
+
+function enterAsGuest() {
+  currentUser = { username: 'Convidado', gmail: 'Sem e-mail cadastrado', accountType: 'Convidado', isGuest: true };
+  safeSetStorage(STORAGE.currentUser, currentUser);
+  openApp();
+  showToast('Você entrou como Convidado.', 'info');
+}
+
+function openApp() {
+  updateNotificationStatus();
+  $('auth-screen').classList.add('hidden');
+  $('app').classList.remove('hidden');
+  updateUserGreeting();
+  renderTasks();
+  renderMealCards();
+  initChat();
+}
+
+function updateUserGreeting() {
+  if (currentUser) {
+    $('user-greeting').textContent = currentUser.isGuest ? 'Modo Convidado' : `Olá, ${currentUser.username}`;
+  } else {
+    $('user-greeting').textContent = 'Olá, Visitante';
+  }
+}
+
+function openProfileModal() {
+  if (!currentUser) return;
+
+  if (currentUser.isGuest) {
+    $('profile-display-name').textContent = 'Convidado';
+    $('profile-badge-type').textContent = 'Convidado';
+    $('profile-badge-type').className = 'inline-block mt-1 px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30';
+    $('profile-val-username').textContent = 'Convidado';
+    $('profile-val-gmail').textContent = 'Não cadastrado';
+    $('profile-val-type').textContent = 'Convidado';
+    $('profile-row-gmail').style.display = 'none';
+  } else {
+    $('profile-display-name').textContent = currentUser.username;
+    $('profile-badge-type').textContent = 'Usuário';
+    $('profile-badge-type').className = 'inline-block mt-1 px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-purple-500/20 text-purple-300 border border-purple-500/30';
+    $('profile-val-username').textContent = currentUser.username;
+    $('profile-val-gmail').textContent = currentUser.gmail;
+    $('profile-val-type').textContent = 'Usuário';
+    $('profile-row-gmail').style.display = 'flex';
+  }
+
+  $('profile-modal').classList.remove('hidden');
+}
+
+function closeProfileModal() {
+  $('profile-modal').classList.add('hidden');
+}
+
+function logout() {
+  clearCurrentUserChatState();
+  localStorage.removeItem(STORAGE.currentUser);
+  currentUser = null;
+  closeProfileModal();
+  $('app').classList.add('hidden');
+  showAuthStep('initial');
+  $('auth-screen').classList.remove('hidden');
+  
+  if ($('signup-username')) $('signup-username').value = '';
+  if ($('signup-gmail')) $('signup-gmail').value = '';
+  if ($('signup-password')) $('signup-password').value = '';
+  if ($('signup-confirm-password')) $('signup-confirm-password').value = '';
+  if ($('login-gmail')) $('login-gmail').value = '';
+  if ($('login-password')) $('login-password').value = '';
+
+  showToast('Sua sessão foi encerrada.', 'info');
+}
+
+function showToast(message, type = 'info') {
+  const box = document.createElement('div');
+  const styles = {
+    success: ['bg-emerald-950/95', 'border-emerald-500/30', 'text-emerald-200', 'fa-circle-check', 'text-emerald-400'],
+    warning: ['bg-amber-950/95', 'border-amber-500/30', 'text-amber-200', 'fa-triangle-exclamation', 'text-amber-400'],
+    info: ['bg-slate-950/95', 'border-white/10', 'text-gray-200', 'fa-circle-info', 'text-blue-400']
+  }[type] || [];
+  box.className = `toast-in pointer-events-auto mx-auto w-fit max-w-full rounded-2xl border px-4 py-3 shadow-2xl backdrop-blur-xl flex items-center gap-2 text-xs font-semibold ${styles.slice(0, 3).join(' ')}`;
+  box.innerHTML = `<i class="fa-solid ${styles[3]} ${styles[4]}"></i><span>${esc(message)}</span>`;
+  $('toast-container').appendChild(box);
+  setTimeout(() => { box.classList.remove('toast-in'); box.classList.add('toast-out'); setTimeout(() => box.remove(), 250); }, 2800);
+}
+
+function getShoppingList(){return safeGetStorage('rotina_shopping_list_v1',[]);}
+function saveShoppingList(list){safeSetStorage('rotina_shopping_list_v1',list);}
+function focusShoppingInput(){closeMarketMode();const el=$('shopping-item-input');if(el){el.focus();el.scrollIntoView({behavior:'smooth',block:'center'});}}
+function renderShoppingList(){const el=$('shopping-list');const c=$('shopping-counter');if(!el)return;const list=getShoppingList();if(c)c.textContent=`${list.filter(i=>!i.done).length} pendentes · ${list.length} no total`;if(!list.length){el.innerHTML='<div class="rounded-2xl border border-dashed border-white/10 p-7 text-center text-gray-600 text-xs">Sua lista está vazia.<br><span class="text-[10px]">Adicione os produtos que pretende comprar.</span></div>';return;}el.innerHTML=list.map(i=>`<div class="glass rounded-2xl p-3 flex items-center gap-3 ${i.done?'opacity-50':''}"><button type="button" onclick="toggleShoppingItem(${i.id})" class="w-9 h-9 rounded-xl border ${i.done?'bg-orange-500 border-orange-500 text-white':'border-white/10 text-gray-600'}"><i class="fa-solid fa-check text-xs"></i></button><div class="flex-1 min-w-0"><div class="text-xs font-semibold ${i.done?'line-through':''}">${esc(i.name)}</div><div class="text-[9px] text-gray-600">${esc(i.category)}</div></div><button type="button" onclick="deleteShoppingItem(${i.id})" class="w-8 h-8 text-gray-600 hover:text-red-400"><i class="fa-solid fa-trash-can text-xs"></i></button></div>`).join('');}
+function addShoppingItem(){const input=$('shopping-item-input');const cat=$('shopping-category-input');const name=input?.value.trim();if(!name){showToast('Digite um item para adicionar.','warning');return;}const list=getShoppingList();list.push({id:Date.now(),name,category:cat?.value||'Mercado',done:false});saveShoppingList(list);input.value='';renderShoppingList();renderMarketMode();showToast('Item adicionado à sua lista.','success');}
+function toggleShoppingItem(id){const list=getShoppingList();const item=list.find(i=>i.id===id);if(!item)return;item.done=!item.done;saveShoppingList(list);renderShoppingList();renderMarketMode();}
+function deleteShoppingItem(id){saveShoppingList(getShoppingList().filter(i=>i.id!==id));renderShoppingList();renderMarketMode();}
+function clearShoppingList(){if(!getShoppingList().length)return;if(confirm('Limpar toda a lista de compras?')){saveShoppingList([]);renderShoppingList();renderMarketMode();}}
+function openMarketMode(){if(!getShoppingList().length){showToast('Crie sua lista antes de entrar no modo de mercado.','warning');focusShoppingInput();return;}$('shopping-market-view')?.classList.remove('hidden');document.querySelector('#shopping-market-view').previousElementSibling?.classList.add('hidden');document.querySelector('#shopping-market-view').previousElementSibling?.previousElementSibling?.classList.add('hidden');renderMarketMode();window.scrollTo({top:0,behavior:'smooth'});}
+function closeMarketMode(){const v=$('shopping-market-view');if(v)v.classList.add('hidden');const cards=document.querySelectorAll('#tab-compras > *');cards.forEach((x,i)=>{if(i<3)x.classList.remove('hidden');});}
+function renderMarketMode(){const el=$('market-list'),txt=$('market-progress-text'),bar=$('market-progress-bar');if(!el)return;const list=getShoppingList(),done=list.filter(i=>i.done).length;if(txt)txt.textContent=`${done} de ${list.length}`;if(bar)bar.style.width=`${list.length?Math.round(done/list.length*100):0}%`;el.innerHTML=list.map(i=>`<button type="button" onclick="toggleShoppingItem(${i.id})" class="w-full glass rounded-2xl p-4 flex items-center gap-3 text-left ${i.done?'opacity-50':''}"><span class="w-11 h-11 rounded-2xl border ${i.done?'bg-emerald-500 border-emerald-500 text-white':'border-white/10 text-transparent'} flex items-center justify-center"><i class="fa-solid fa-check"></i></span><span class="flex-1"><b class="block text-sm ${i.done?'line-through text-gray-500':''}">${esc(i.name)}</b><small class="text-[9px] text-gray-600">${esc(i.category)}</small></span></button>`).join('');}
+function finishMarketMode(){const list=getShoppingList(),remaining=list.filter(i=>!i.done).length;if(remaining){showToast(`Ainda faltam ${remaining} ${remaining===1?'item':'itens'}.`,'warning');return;}showToast('Compra finalizada!','success');closeMarketMode();}
+
+function switchTab(tab) {
+  ['rotina', 'nutricao', 'scanner', 'compras', 'assistente'].forEach(t => {
+    const section = $(`tab-${t}`);
+    if (section) section.classList.toggle('hidden', t !== tab);
+    const navBtn = $(`nav-${t}`);
+    if (navBtn) navBtn.classList.toggle('active', t === tab);
+  });
+  if (tab === 'nutricao') renderMealCards();
+  if (tab === 'compras') { closeMarketMode(); renderShoppingList(); }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function priorityClass(p) {
+  return p === 'Alta' ? 'text-red-400 bg-red-500/10 border-red-500/10' :
+         p === 'Média' ? 'text-amber-400 bg-amber-500/10 border-amber-500/10' :
+         'text-emerald-400 bg-emerald-500/10 border-emerald-500/10';
+}
+
+function renderTasks() {
+  const list = $('taskList');
+  if (!list) return;
+  $('task-counter').textContent = `${tarefas.length} ${tarefas.length === 1 ? 'item' : 'itens'}`;
+  if (!tarefas.length) {
+    list.innerHTML = `<div class="glass rounded-2xl p-7 text-center text-gray-600"><i class="fa-regular fa-calendar-xmark text-2xl mb-2"></i><div class="text-xs">Nenhuma tarefa ainda.</div></div>`;
+    return;
+  }
+  const sorted = [...tarefas].sort((a, b) => (a.hora || '').localeCompare(b.hora || ''));
+  list.innerHTML = sorted.map(t => `
+    <div class="task ${t.feita ? 'task-done' : ''} glass rounded-2xl p-3 flex items-center gap-3 group">
+      <button type="button" onclick="toggleTask(${t.id})" class="w-9 h-9 shrink-0 rounded-xl border ${t.feita ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-white/10 text-gray-600'} flex items-center justify-center transition">
+        <i class="fa-solid fa-check text-xs"></i>
+      </button>
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] font-bold text-gray-500">${esc(t.hora)}</span>
+          <span class="text-[9px] px-1.5 py-0.5 rounded-md border ${priorityClass(t.prioridade)}">${esc(t.prioridade)}</span>
+        </div>
+        <div class="task-title text-xs font-semibold text-gray-200 mt-1 truncate">${esc(t.titulo)}</div>
+      </div>
+      <button type="button" onclick="deleteTask(${t.id})" class="w-8 h-8 shrink-0 rounded-lg text-gray-700 hover:text-red-400 hover:bg-red-500/10 transition" title="Excluir tarefa"><i class="fa-solid fa-trash-can text-xs"></i></button>
+    </div>`).join('');
+}
+
+function addTarefa() {
+  const input = $('task-input');
+  const titulo = input.value.trim();
+  if (!titulo) { showToast('Digite o nome da tarefa.', 'warning'); input.focus(); return; }
+  unlockAlarmAudio();
+  const hora = $('task-time').value || '08:00';
+  const alarmEnabled = $('task-alarm-enabled').checked;
+  const alarmVolume = Number($('task-alarm-volume').value) || 80;
+  tarefas.push({
+    id: Date.now(),
+    titulo,
+    hora,
+    prioridade: $('task-priority').value,
+    feita: false,
+    alarme: { enabled: alarmEnabled, mode: taskAlarmMode, volume: alarmVolume, lastTriggered: '' }
+  });
+  saveTasks(); renderTasks(); input.value = '';
+  showToast(alarmEnabled ? `Tarefa salva para ${hora}. Alarme configurado.` : `Tarefa salva para ${hora}. Alarme desativado.`, 'success');
+  requestAlarmNotificationPermission();
+}
+function toggleTask(id) {
+  const t = tarefas.find(x => x.id === id);
+  if (t) { t.feita = !t.feita; saveTasks(); renderTasks(); if (t.feita) showToast('Tarefa concluída!', 'success'); }
+}
+
+function deleteTask(id) {
+  tarefas = tarefas.filter(x => x.id !== id);
+  saveTasks(); renderTasks(); showToast('Tarefa removida.', 'info');
+}
+
+function otimizarRotina() {
+  if (!tarefas.length) { showToast('Adicione tarefas primeiro.', 'warning'); return; }
+  const prioridade = { Alta: 0, Média: 1, Baixa: 2 };
+  tarefas.sort((a, b) => (prioridade[a.prioridade] ?? 1) - (prioridade[b.prioridade] ?? 1) || (a.hora || '').localeCompare(b.hora || ''));
+  saveTasks(); renderTasks();
+  const altas = tarefas.filter(t => t.prioridade === 'Alta' && !t.feita).length;
+  $('ai-routine-feedback').classList.remove('hidden');
+  $('ai-routine-text').textContent = altas
+    ? `Organizei suas tarefas priorizando as ${altas} de alta urgência. Tente focar nelas em blocos ininterruptos de tempo.`
+    : 'Sua lista está otimizada! Mantenha a sequência planejada e marque as tarefas concluídas.';
+  showToast('Rotina otimizada.', 'success');
+}
+
+/* ====================================================================
+   ALARMES E VOLUME
+   ==================================================================== */
+let taskAlarmMode = 'sound';
+let alarmAudioContext = null;
+let activeAlarmOscillators = [];
+let activeAlarmTimer = null;
+
+function normalizeAlarm(task) {
+  if (!task.alarme) task.alarme = { enabled: true, mode: 'sound', volume: 80, lastTriggered: '' };
+  if (task.alarme.enabled === undefined) task.alarme.enabled = true;
+  task.alarme.mode = 'sound';
+  if (typeof task.alarme.volume !== 'number') task.alarme.volume = 80;
+  if (task.alarme.lastTriggered === undefined) task.alarme.lastTriggered = '';
+  return task.alarme;
+}
+
+tarefas.forEach(normalizeAlarm);
+saveTasks();
+
+async function unlockAlarmAudio() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return false;
+    if (!alarmAudioContext) {
+      alarmAudioContext = new AC();
+    }
+    if (alarmAudioContext.state === 'suspended') {
+      await alarmAudioContext.resume();
+    }
+    return alarmAudioContext.state === 'running';
+  } catch (e) {
+    console.warn('Áudio do alarme indisponível:', e);
+    return false;
+  }
+}
+
+async function playAlarmBeep(volume = 80, duration = 240, frequency = 659) {
+  const ready = await unlockAlarmAudio();
+  if (!ready || !alarmAudioContext) return;
+  try {
+    const now = alarmAudioContext.currentTime;
+    const osc = alarmAudioContext.createOscillator();
+    const gain = alarmAudioContext.createGain();
+
+    // Som de campainha mais forte e audível.
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(frequency, now);
+
+    // 100% no controle = volume máximo seguro do Web Audio.
+    const level = Math.max(0.0001, Math.min(1, Number(volume) / 100) * 0.55);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.linearRampToValueAtTime(level, now + 0.025);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration / 1000);
+
+    osc.connect(gain);
+    gain.connect(alarmAudioContext.destination);
+    osc.start(now);
+    osc.stop(now + duration / 1000 + 0.05);
+
+    activeAlarmOscillators.push(osc);
+    osc.onended = () => {
+      activeAlarmOscillators = activeAlarmOscillators.filter(o => o !== osc);
+    };
+  } catch (e) {
+    console.warn('Falha ao reproduzir o som do alarme:', e);
+  }
+}
+
+async function startAlarmSound(volume) {
+  stopAlarmSound();
+  const ready = await unlockAlarmAudio();
+  if (!ready) return false;
+
+  const vol = Math.max(0, Math.min(100, Number(volume) || 80));
+  const ring = () => {
+    const melody = [
+      [659, 0], [784, 180], [659, 360],
+      [784, 560], [880, 760],
+      [784, 960], [659, 1140], [784, 1320], [988, 1500]
+    ];
+    melody.forEach(([freq, delay]) => {
+      setTimeout(() => { playAlarmBeep(vol, 260, freq); }, delay);
+    });
+  };
+
+  ring();
+  activeAlarmTimer = setInterval(ring, 2800);
+  return true;
+}
+
+function stopAlarmSound() {
+  if (activeAlarmTimer) { clearInterval(activeAlarmTimer); activeAlarmTimer = null; }
+  activeAlarmOscillators.forEach(o => { try { o.stop(); } catch (e) {} });
+  activeAlarmOscillators = [];
+}
+
+function stopAlarm() {
+  stopAlarmSound();
+  $('alarm-ring-modal').classList.add('hidden');
+}
+
+async function triggerAlarm(task) {
+  window.__lastAlarmTask = task;
+  const alarm = normalizeAlarm(task);
+
+  // Tenta tocar o áudio imediatamente quando a página ainda está ativa.
+  if (alarm.mode === 'sound' || alarm.mode === 'both') {
+    await startAlarmSound(alarm.volume);
+  }
+
+  $('ring-task-title').textContent = task.titulo;
+  $('ring-task-time').textContent = task.hora;
+  $('ring-mode-text').textContent = `Som • volume ${alarm.volume}%`;
+  $('alarm-ring-modal').classList.remove('hidden');
+
+  // Fallback do Android/Chrome: a notificação usa o som configurado
+  // para as notificações do aplicativo/site.
+  if ('Notification' in window && Notification.permission === 'granted') {
+    try {
+      new Notification('⏰ Rotina no Controle', {
+        body: `${task.hora} • ${task.titulo}`,
+        tag: `rotina-alarm-${task.id || task.hora}`,
+        renotify: true,
+        requireInteraction: true,
+        silent: false
+      });
+    } catch (e) {}
+  }
+
+  notifyAlarmThroughServiceWorker(task);
+}
+
+// A função completa de permissão fica na seção PWA acima.
+
+function checkAlarms() {
+  const now = new Date();
+  const hhmm = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+  const dayKey = now.toISOString().slice(0, 10);
+  let changed = false;
+  tarefas.forEach(task => {
+    const alarm = normalizeAlarm(task);
+    if (!alarm.enabled || task.feita || task.hora !== hhmm) return;
+    const stamp = `${dayKey}_${hhmm}`;
+    if (alarm.lastTriggered === stamp) return;
+    alarm.lastTriggered = stamp;
+    changed = true;
+    triggerAlarm(task);
+  });
+  if (changed) saveTasks();
+}
+
+function updateTaskAlarmVolumeLabel(value) {
+  $('task-alarm-volume-value').textContent = `${value}%`;
+}
+
+function setTaskAlarmMode(mode) {
+  taskAlarmMode = 'sound';
+  const btn = $('task-alarm-mode-sound');
+  if (btn) btn.classList.add('active');
+  unlockAlarmAudio();
+}
+
+async function testTaskAlarm() {
+  const volume = Number($('task-alarm-volume').value) || 80;
+  const ready = await unlockAlarmAudio();
+
+  if (!ready) {
+    showToast('Não foi possível ativar o áudio. Toque novamente em “Testar som” e verifique o volume de mídia do celular.', 'warning');
+    return;
+  }
+
+  const started = await startAlarmSound(volume);
+  if (!started) {
+    showToast('O áudio do alarme não pôde ser iniciado neste navegador.', 'warning');
+    return;
+  }
+
+  showToast('Teste do alarme iniciado. O som deve tocar agora.', 'success');
+  setTimeout(stopAlarm, 5000);
+}
+
+// Não tente criar o AudioContext automaticamente ao carregar a página:
+// o Android/Chrome pode deixá-lo suspenso. O primeiro toque do usuário
+// desbloqueia o áudio e, depois disso, os alarmes podem usar o mesmo contexto.
+document.addEventListener('pointerdown', () => { unlockAlarmAudio(); }, { once: true, passive: true });
+document.addEventListener('touchstart', () => { unlockAlarmAudio(); }, { once: true, passive: true });
+
+setTaskAlarmMode('sound');
+setInterval(checkAlarms, 1000);
+
+const defaultMeals = [
+  { id: 'cafe', title: 'Café da manhã', icon: 'fa-sun', color: 'amber' },
+  { id: 'almoco', title: 'Almoço', icon: 'fa-bowl-food', color: 'blue' },
+  { id: 'lanche', title: 'Lanche', icon: 'fa-cookie-bite', color: 'purple' },
+  { id: 'jantar', title: 'Jantar', icon: 'fa-moon', color: 'emerald' }
+];
+
+let mealRequests = safeGetStorage('rotina_meal_requests_v1', {});
+
+function saveMealRequests() {
+  safeSetStorage('rotina_meal_requests_v1', mealRequests);
+}
+
+/*
+ * REGRA PRINCIPAL:
+ * O texto digitado em "O que você quer?" é SOMENTE o pedido do usuário.
+ * A receita melhorada nunca deve simplesmente repetir esse texto.
+ * Ela é construída a partir do pedido, adicionando ingredientes,
+ * quantidades, preparo e uma pequena melhoria de equilíbrio.
+ */
+function buildImprovedRecipe(request, mealTitle) {
+  const original = request.trim();
+  if (!original) return null;
+
+  const text = original.toLowerCase();
+
+  const has = (...words) => words.some(w => text.includes(w));
+
+  let ingredients = [];
+  let preparation = '';
+  let title = '';
+
+  if (has('ovo', 'ovos')) {
+    ingredients = ['2 ovos', '1 colher de chá de azeite ou manteiga', '1 porção de tomate ou outra verdura', '1 pitada de sal e pimenta'];
+    if (has('pão', 'pão')) ingredients.push('1–2 fatias de pão integral');
+    if (has('banana')) ingredients.push('1 banana');
+    preparation = 'Bata os ovos, aqueça uma frigideira e prepare-os em fogo baixo, mexendo até ficarem cremosos. Sirva com os acompanhamentos que você pediu e acrescente tomate ou outra verdura para deixar a refeição mais completa.';
+    title = 'Ovos preparados com acompanhamento equilibrado';
+  } else if (has('pão', 'pão')) {
+    ingredients = ['2 fatias de pão integral', '1 fonte de proteína (ovo, queijo branco ou frango desfiado)', 'tomate ou folhas', '1 fruta de sua preferência'];
+    preparation = 'Toste levemente o pão e monte com uma fonte de proteína e vegetais. Sirva com uma fruta para complementar a refeição.';
+    title = 'Sanduíche de pão integral melhorado';
+  } else if (has('arroz') && has('feijão')) {
+    ingredients = ['3–4 colheres de sopa de arroz', '1 concha pequena de feijão', '1 porção de frango, carne magra ou ovos', 'salada variada', '1 fio de azeite'];
+    preparation = 'Aqueça o arroz e o feijão. Prepare a proteína grelhada ou cozida com pouco óleo e sirva com uma porção generosa de salada. Assim, o prato mantém o que você pediu e fica mais completo.';
+    title = 'Prato de arroz e feijão mais equilibrado';
+  } else if (has('frango')) {
+    ingredients = ['1 filé de frango', '3–4 colheres de sopa de arroz, batata ou outro carboidrato', 'salada ou legumes variados', '1 fio de azeite', 'temperos naturais a gosto'];
+    preparation = 'Tempere o frango e grelhe até ficar bem cozido. Prepare o acompanhamento e sirva com legumes ou salada. O resultado mantém o frango como protagonista, mas deixa a refeição mais completa.';
+    title = 'Frango grelhado com acompanhamento completo';
+  } else if (has('macarrão', 'macarrao', 'massa')) {
+    ingredients = ['1 porção de macarrão', '1 fonte de proteína, como frango, atum ou ovo', 'tomate e outros vegetais', '1 colher de chá de azeite', 'ervas e temperos a gosto'];
+    preparation = 'Cozinhe o macarrão até ficar al dente. Refogue rapidamente os vegetais, junte a proteína e misture à massa. Finalize com ervas e pouco azeite.';
+    title = 'Macarrão completo com proteína e vegetais';
+  } else if (has('banana')) {
+    ingredients = ['1 banana', '2 colheres de sopa de aveia', '1 fonte de proteína, como iogurte natural ou leite', 'canela a gosto'];
+    preparation = 'Fatie a banana, misture com a aveia e acrescente iogurte natural ou leite. Finalize com canela. Se quiser, aqueça por alguns minutos para ficar cremoso.';
+    title = 'Banana com aveia em versão mais completa';
+  } else {
+    // Para qualquer pedido diferente, NÃO repetir o texto como se fosse receita.
+    ingredients = [original, '1 fonte de proteína', '1 porção de vegetais ou fruta', 'temperos naturais a gosto'];
+    preparation = `Prepare ${original} da forma que normalmente seria feito, mas complemente a refeição com uma fonte de proteína e uma porção de vegetais ou fruta. Ajuste o sal e o óleo para manter o preparo simples e equilibrado.`;
+    title = `${original.charAt(0).toUpperCase() + original.slice(1)} — versão melhorada`;
+  }
+
+  return {
+    title,
+    ingredients: ingredients.join(' • '),
+    preparation,
+    note: `Adaptado ao seu pedido de ${mealTitle.toLowerCase()}.`
+  };
+}
+
+function renderMealCards() {
+  const container = $('meal-cards');
+  if (!container) return;
+
+  container.innerHTML = defaultMeals.map(meal => {
+    const request = mealRequests[meal.id] || '';
+    const recipe = request ? buildImprovedRecipe(request, meal.title) : null;
+
+    return `
+      <div class="glass rounded-[24px] p-5 overflow-hidden">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-2xl bg-${meal.color}-500/10 text-${meal.color}-400 flex items-center justify-center">
+            <i class="fa-solid ${meal.icon}"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Refeição</div>
+            <h3 class="text-xl font-extrabold">${esc(meal.title)}</h3>
+          </div>
+        </div>
+
+        <label class="label">O que você quer?</label>
+        <input
+          id="meal-input-${meal.id}"
+          class="input"
+          value="${esc(request)}"
+          placeholder="Ex: ovos mexidos com pão integral e banana"
+          oninput="updateMealRequest('${meal.id}', this.value)"
+        >
+
+        <div id="recipe-${meal.id}" class="${recipe ? '' : 'hidden'} mt-4 rounded-[22px] bg-white/[.03] border border-white/5 p-4">
+          ${recipe ? `
+            <div class="flex items-center justify-between gap-3">
+              <div class="text-[10px] uppercase tracking-widest text-emerald-400 font-bold">Receita melhorada</div>
+              <span class="text-[9px] text-emerald-300 bg-emerald-500/10 border border-emerald-500/15 rounded-full px-2 py-1">Adaptada</span>
+            </div>
+            <h4 class="text-lg font-extrabold mt-2">${esc(recipe.title)}</h4>
+            <div class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mt-4 mb-1">Ingredientes</div>
+            <p class="text-[11px] text-gray-300 leading-5">${esc(recipe.ingredients)}</p>
+            <div class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mt-4 mb-1">Como preparar</div>
+            <p class="text-[11px] text-gray-300 leading-5">${esc(recipe.preparation)}</p>
+            <div class="mt-4 text-[10px] text-blue-300"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>${esc(recipe.note)}</div>
+          ` : ''}
+        </div>
+
+        <button type="button" onclick="melhorarReceita('${meal.id}')"
+          class="w-full mt-3 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition active:scale-[.98] flex items-center justify-center gap-2">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Melhorar receita
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateMealRequest(id, value) {
+  mealRequests[id] = value;
+  saveMealRequests();
+}
+
+function melhorarReceita(id) {
+  const meal = defaultMeals.find(x => x.id === id);
+  const input = $(`meal-input-${id}`);
+  const request = input ? input.value.trim() : '';
+
+  if (!request) {
+    showToast('Escreva primeiro o que você quer comer.', 'warning');
+    input?.focus();
+    return;
+  }
+
+  mealRequests[id] = request;
+  saveMealRequests();
+
+  const recipe = buildImprovedRecipe(request, meal.title);
+  const box = $(`recipe-${id}`);
+  if (!box || !recipe) return;
+
+  box.classList.remove('hidden');
+  box.innerHTML = `
+    <div class="flex items-center justify-between gap-3">
+      <div class="text-[10px] uppercase tracking-widest text-emerald-400 font-bold">Receita melhorada</div>
+      <span class="text-[9px] text-emerald-300 bg-emerald-500/10 border border-emerald-500/15 rounded-full px-2 py-1">Adaptada</span>
+    </div>
+    <h4 class="text-lg font-extrabold mt-2">${esc(recipe.title)}</h4>
+    <div class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mt-4 mb-1">Ingredientes</div>
+    <p class="text-[11px] text-gray-300 leading-5">${esc(recipe.ingredients)}</p>
+    <div class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mt-4 mb-1">Como preparar</div>
+    <p class="text-[11px] text-gray-300 leading-5">${esc(recipe.preparation)}</p>
+    <div class="mt-4 text-[10px] text-blue-300"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>${esc(recipe.note)}</div>
+  `;
+
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  showToast('Receita melhorada com base no que você pediu.', 'success');
+}
+
+function adicionarRefeicaoPersonalizada() {
+  showToast('As quatro refeições principais já estão prontas para você personalizar.', 'info');
+}
+
+function gerarCardapio() {
+  renderMealCards();
+  showToast('Digite o que você quer em cada refeição e toque em “Melhorar receita”.', 'info');
+}
+
+function scannerEscaparJson(text) {
+  return String(text || '').replace(/```json/gi, '').replace(/```/g, '').trim();
+}
+
+function formatarCalorias(valor) {
+  const n = Number(String(valor ?? '').replace(',', '.'));
+  return Number.isFinite(n) && n > 0 ? `${Math.round(n)} kcal` : 'estimativa não disponível';
+}
+
+function normalizarScannerResultado(raw) {
+  let data = raw;
+  if (typeof raw === 'string') {
+    try { data = JSON.parse(scannerEscaparJson(raw)); }
+    catch { return null; }
+  }
+  if (!data || typeof data !== 'object') return null;
+  return {
+    is_food: data.is_food === true,
+    ingredients: Array.isArray(data.ingredients) ? data.ingredients.map(String).filter(Boolean).slice(0, 12) : [],
+    recipe_name: String(data.recipe_name || '').trim(),
+    recipe: String(data.recipe || '').trim(),
+    calories_per_serving: data.calories_per_serving,
+    servings: Number(data.servings) || 1,
+    note: String(data.note || '').trim()
+  };
+}
+
+function renderizarScannerResultado(result) {
+  const box = $('scanner-results');
+  if (!box) return;
+
+  if (!result || !result.is_food) {
+    box.innerHTML = `
+      <div class="rounded-2xl bg-amber-500/10 border border-amber-500/15 p-4">
+        <div class="flex items-center gap-2 text-amber-300 font-bold text-sm">
+          <i class="fa-solid fa-circle-exclamation"></i> Não encontrei alimentos
+        </div>
+        <p class="text-[11px] text-gray-400 leading-5 mt-2">
+          O Scanner funciona somente com alimentos ou ingredientes. Tire uma foto de frutas, verduras, carnes, ovos, arroz, feijão ou outros alimentos.
+        </p>
+      </div>`;
+    return;
+  }
+
+  const ingredients = result.ingredients.length
+    ? result.ingredients.map(i => `<span class="inline-flex px-2.5 py-1 rounded-lg bg-white/[.04] border border-white/5 text-[10px] text-gray-300">${esc(i)}</span>`).join('')
+    : '<span class="text-[11px] text-gray-500">Ingredientes identificados na imagem.</span>';
+
+  box.innerHTML = `
+    <div class="rounded-2xl bg-white/[.03] border border-white/5 p-4">
+      <div class="flex items-center justify-between gap-3">
+        <div>
+          <div class="text-[10px] uppercase tracking-widest text-emerald-400 font-bold">Receita sugerida</div>
+          <h3 class="text-lg font-extrabold mt-1">${esc(result.recipe_name || 'Receita com seus ingredientes')}</h3>
+        </div>
+        <div class="shrink-0 px-3 py-2 rounded-xl bg-orange-500/10 border border-orange-500/15 text-orange-300 text-xs font-extrabold">
+          ${formatarCalorias(result.calories_per_serving)}
+          <div class="text-[8px] font-medium text-gray-500 mt-0.5">por porção</div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <div class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-2">Alimentos encontrados</div>
+        <div class="flex flex-wrap gap-1.5">${ingredients}</div>
+      </div>
+
+      <div class="mt-4">
+        <div class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Como preparar</div>
+        <p class="text-[11px] text-gray-300 leading-5 whitespace-pre-line">${esc(result.recipe || 'A IA não conseguiu montar uma receita com segurança.')}</p>
+      </div>
+
+      ${result.note ? `<div class="mt-4 p-3 rounded-xl bg-purple-500/10 border border-purple-500/10 text-[10px] text-purple-200 leading-4"><i class="fa-solid fa-wand-magic-sparkles mr-1 text-purple-400"></i>${esc(result.note)}</div>` : ''}
+    </div>`;
+}
+
+function prepararImagemParaIA(dataUrl, maxSide = 1600, quality = 0.82) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(img.width * scale));
+      canvas.height = Math.max(1, Math.round(img.height * scale));
+      const ctx = canvas.getContext('2d', { alpha: false });
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
+async function geminiGenerateContent(contents, options = {}) {
+  if (!GEMINI_API_KEY) throw new Error('A chave da Gemini não está configurada nesta versão do app.');
+
+  // Tenta mais de um modelo e repete erros temporários de capacidade.
+  // A API oficial atualmente disponibiliza estes modelos para uso geral.
+  const models = ['gemini-3.6-flash', 'gemini-3.5-flash-lite', 'gemini-2.5-flash'];
+  let lastError = null;
+
+  for (const model of models) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const payload = { contents };
+        if (options.systemInstruction) payload.systemInstruction = options.systemInstruction;
+        if (options.generationConfig) payload.generationConfig = options.generationConfig;
+
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': GEMINI_API_KEY
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (response.ok) return { data, model };
+
+        const status = response.status;
+        const message = data?.error?.message || `Erro HTTP ${status}`;
+        lastError = new Error(message);
+        lastError.status = status;
+
+        // 429/5xx normalmente são temporários: espera e tenta de novo.
+        if ([429, 500, 502, 503, 504].includes(status) && attempt === 0) {
+          await new Promise(r => setTimeout(r, 900));
+          continue;
+        }
+        break;
+      } catch (err) {
+        lastError = err;
+        if (attempt === 0) {
+          await new Promise(r => setTimeout(r, 700));
+          continue;
+        }
+      }
+    }
+  }
+
+  throw lastError || new Error('A Gemini não respondeu.');
+}
+
+async function analisarIngredientesComGemini(dataUrl) {
+  if (!GEMINI_API_KEY) {
+    throw new Error('A chave da Gemini não está configurada nesta versão do app.');
+  }
+
+  const base64 = dataUrl.split(',')[1];
+  const mimeType = (dataUrl.match(/^data:(image\/[^;]+);base64,/) || [,'image/jpeg'])[1];
+
+  const prompt = `
+Você é o scanner de alimentos do app Rotina no Controle.
+Analise SOMENTE o conteúdo visual da imagem.
+
+REGRA PRINCIPAL:
+- Se a imagem não mostrar claramente alimentos ou ingredientes alimentares, responda is_food=false.
+- Não trate pessoas, animais, objetos, roupas, eletrônicos, documentos, paisagens, móveis ou embalagens vazias como alimentos.
+- Se houver uma embalagem de um alimento e for possível identificar o alimento pelo rótulo, pode considerar o alimento; não invente ingredientes que não aparecem.
+- Se houver dúvida relevante, prefira is_food=false.
+
+Se is_food=true:
+1. Liste apenas os alimentos/ingredientes visíveis ou claramente identificáveis.
+2. Crie UMA receita simples usando principalmente esses ingredientes.
+3. Informe calorias ESTIMADAS por porção, deixando claro que é uma estimativa.
+4. Não invente quantidades exatas que não podem ser vistas; faça uma estimativa razoável.
+5. Responda em português do Brasil.
+
+RETORNE SOMENTE JSON válido, sem markdown:
+{
+  "is_food": true,
+  "ingredients": ["..."],
+  "recipe_name": "...",
+  "recipe": "passo a passo curto",
+  "calories_per_serving": 0,
+  "servings": 1,
+  "note": "Calorias estimadas; o valor real varia conforme quantidade e preparo."
+}
+
+Para imagem sem alimento:
+{
+  "is_food": false,
+  "ingredients": [],
+  "recipe_name": "",
+  "recipe": "",
+  "calories_per_serving": 0,
+  "servings": 0,
+  "note": "A imagem não mostra alimentos suficientes para análise."
+}
+`.trim();
+
+  const { data } = await geminiGenerateContent([{
+    role: 'user',
+    parts: [
+      { text: prompt },
+      { inline_data: { mime_type: mimeType, data: base64 } }
+    ]
+  }], {
+    generationConfig: { responseMimeType: 'application/json' }
+  });
+
+  const text = data?.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('') || '';
+  const result = normalizarScannerResultado(text);
+  if (!result) throw new Error('Não consegui interpretar a resposta da IA.');
+  return result;
+}
+
+async function processarFoto(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  // Permite apenas imagens reais.
+  if (!file.type.startsWith('image/')) {
+    showToast('Escolha uma foto de alimentos.', 'warning');
+    event.target.value = '';
+    return;
+  }
+
+  const preview = $('scanner-preview');
+  const img = $('scanned-img');
+  const status = $('scanner-status');
+  const results = $('scanner-results');
+
+  preview.classList.remove('hidden');
+  results.classList.add('hidden');
+  status.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-purple-400"></i><span>Preparando a foto...</span>';
+
+  const reader = new FileReader();
+  reader.onload = async e => {
+    try {
+      const optimized = await prepararImagemParaIA(e.target.result);
+      img.src = optimized;
+      status.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-purple-400"></i><span>Identificando os alimentos e criando sua receita...</span>';
+
+      const result = await analisarIngredientesComGemini(optimized);
+
+      if (result.is_food) {
+        status.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i><span>Alimentos identificados. Receita pronta!</span>';
+        renderizarScannerResultado(result);
+        results.classList.remove('hidden');
+        showToast('Receita criada com seus alimentos.', 'success');
+      } else {
+        status.innerHTML = '<i class="fa-solid fa-circle-info text-amber-400"></i><span>Essa imagem não foi identificada como alimento.</span>';
+        renderizarScannerResultado(result);
+        results.classList.remove('hidden');
+      }
+    } catch (error) {
+      console.error('Erro no Scanner:', error);
+      status.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-400"></i><span>Não foi possível analisar a foto.</span>';
+      results.classList.remove('hidden');
+      results.innerHTML = `
+        <div class="rounded-2xl bg-red-500/10 border border-red-500/15 p-4">
+          <div class="text-xs font-bold text-red-300">Scanner não conseguiu analisar</div>
+          <p class="text-[10px] text-gray-400 leading-5 mt-2">${esc(error.message || 'Verifique a conexão e tente novamente.')}</p>
+        </div>`;
+    } finally {
+      event.target.value = '';
+    }
+  };
+
+  reader.readAsDataURL(file);
+}
+
+
+/* ====================================================================
+   INTEGRAÇÃO CORRIGIDA DO ASSISTENTE GEMINI 
+   ==================================================================== */
+const GEMINI_API_KEY = ''; // Chave removida para publicação segura no GitHub Pages. Use um backend/proxy seguro para a API.
+
+// ====================================================================
+// MEMÓRIA SEPARADA DO ASSISTENTE
+// Cada conta tem um histórico próprio baseado no Gmail.
+// Convidado NÃO grava histórico no localStorage.
+let conversationHistory = [];
+let assistantBusy = false;
+
+function getChatStorageKey() {
+  if (!currentUser || currentUser.isGuest || !currentUser.gmail) return null;
+  const gmail = String(currentUser.gmail).trim().toLowerCase();
+  return `${STORAGE.chatHistory}::${encodeURIComponent(gmail)}`;
+}
+
+function loadCurrentUserChatHistory() {
+  const key = getChatStorageKey();
+
+  // Modo Convidado: nenhuma memória persistente.
+  if (!key) {
+    conversationHistory = [];
+    return;
+  }
+
+  // Histórico separado por Gmail. O antigo histórico global não é reutilizado,
+  // evitando que mensagens de uma conta apareçam em outra.
+  conversationHistory = safeGetStorage(key, []);
+  if (!Array.isArray(conversationHistory)) conversationHistory = [];
+}
+
+function saveCurrentUserChatHistory() {
+  const key = getChatStorageKey();
+
+  // Convidado não salva memória.
+  if (!key) return;
+
+  safeSetStorage(key, conversationHistory);
+}
+
+function clearCurrentUserChatState() {
+  conversationHistory = [];
+  assistantBusy = false;
+}
+
+async function verificarConexaoIA() {
+  const badge = $('api-status-badge');
+  if (!badge) return;
+
+  if (!GEMINI_API_KEY) {
+    badge.className = "text-[10px] text-amber-400";
+    badge.textContent = "● Configure a chave da Gemini";
+    return;
+  }
+
+  // Não fazemos uma chamada "ping" ao abrir a aba. Isso consumia uma requisição
+  // antes do usuário usar o Assistente e podia mostrar Offline durante picos de demanda.
+  badge.className = "text-[10px] text-emerald-400";
+  badge.textContent = "● Gemini pronto";
+}
+
+function initChat() {
+  const container = $('chat-messages');
+  container.innerHTML = '';
+  clearCurrentUserChatState();
+  loadCurrentUserChatHistory();
+  verificarConexaoIA();
+
+  if (conversationHistory.length === 0) {
+    appendMessage('assistant', currentUser?.isGuest
+      ? 'Olá! Sou o assistente do Rotina no Controle. Estou no Modo Convidado e não vou guardar esta conversa para uma próxima entrada.'
+      : 'Olá! Sou o assistente do Rotina no Controle. Esta conversa fica na memória desta conta e não será misturada com outras contas.');
+  } else {
+    conversationHistory.forEach(msg => {
+      appendMessage(msg.role === 'user' ? 'user' : 'assistant', msg.text, false);
+    });
+  }
+}
+
+function appendMessage(sender, text, save = true) {
+  const container = $('chat-messages');
+  const isUser = sender === 'user';
+  const div = document.createElement('div');
+  div.className = `flex gap-3 ${isUser ? 'flex-row-reverse' : ''}`;
+  div.innerHTML = `
+    <div class="w-8 h-8 rounded-xl ${isUser ? 'bg-purple-600/20 text-purple-300' : 'gradient text-white'} flex items-center justify-center shrink-0">
+      <i class="fa-solid ${isUser ? 'fa-user text-xs' : 'fa-robot text-sm'}"></i>
+    </div>
+    <div class="max-w-[80%] rounded-2xl px-4 py-3 text-xs leading-5 ${isUser ? 'bg-purple-600 text-white rounded-tr-none' : 'glass border border-white/5 text-gray-200 rounded-tl-none'}">
+      ${esc(text).replace(/\n/g, '<br>')}
+    </div>
+  `;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+
+  if (save) {
+    conversationHistory.push({ role: isUser ? 'user' : 'model', text });
+    saveCurrentUserChatHistory();
+  }
+}
+
+async function sendChat() {
+  const input = $('chat-input');
+  const text = input.value.trim();
+  if (!text || assistantBusy) return;
+
+  input.value = '';
+  appendMessage('user', text);
+  assistantBusy = true;
+
+  const container = $('chat-messages');
+  const loadingId = 'loading-' + Date.now();
+  const loadingDiv = document.createElement('div');
+  loadingDiv.id = loadingId;
+  loadingDiv.className = 'flex gap-3';
+  loadingDiv.innerHTML = `
+    <div class="w-8 h-8 rounded-xl gradient text-white flex items-center justify-center shrink-0">
+      <i class="fa-solid fa-robot text-sm"></i>
+    </div>
+    <div class="glass border border-white/5 rounded-2xl rounded-tl-none px-4 py-3 text-xs text-gray-400 flex items-center gap-2">
+      <i class="fa-solid fa-spinner fa-spin text-purple-400"></i><span>Pensando...</span>
+    </div>
+  `;
+  container.appendChild(loadingDiv);
+  container.scrollTop = container.scrollHeight;
+
+  try {
+    if (!GEMINI_API_KEY) {
+      throw new Error("API Key não configurada. Entrando em modo offline.");
+    }
+
+    // A primeira mensagem enviada à API deve ser do usuário.
+    let startIndex = 0;
+    while (startIndex < conversationHistory.length && conversationHistory[startIndex].role !== 'user') {
+      startIndex++;
+    }
+
+    const contents = conversationHistory.slice(startIndex).map(m => ({
+      role: m.role === 'user' ? 'user' : 'model',
+      parts: [{ text: m.text }]
+    }));
+
+    const { data } = await geminiGenerateContent(contents, {
+      systemInstruction: {
+        parts: [{ text: "Você é o Rotina no Controle, um assistente virtual especialista em produtividade, organização de rotina e nutrição. Dê respostas práticas, acolhedoras, objetivas e formatadas em português." }]
+      }
+    });
+
+    document.getElementById(loadingId)?.remove();
+
+    const candidate = data.candidates?.[0];
+    if (candidate && candidate.content?.parts?.[0]?.text) {
+      const reply = candidate.content.parts[0].text;
+      appendMessage('assistant', reply);
+    } else {
+      throw new Error("Resposta inválida da IA");
+    }
+  } catch (err) {
+    document.getElementById(loadingId)?.remove();
+    const badge = $('api-status-badge');
+    if (badge && GEMINI_API_KEY) {
+      badge.className = "text-[10px] text-amber-400";
+      badge.textContent = "● Gemini ocupado — usando modo local";
+    }
+    if (GEMINI_API_KEY) {
+      console.warn("Aviso de contingência:", err.message);
+    }
+
+    let fallback = "Compreendi sua dúvida! Como assistente do Rotina no Controle, recomendo manter suas tarefas organizadas e priorizadas. (Modo Offline)";
+    const t = text.toLowerCase();
+    if (t.includes('receita') || t.includes('comer') || t.includes('almoço') || t.includes('proteína')) {
+      fallback = "Para refeições nutritivas e ricas em proteína, aposte em ovos, peito de frango, carne magra, lentilhas, e grão-de-bico! Use a aba de Nutrição para gerar um plano sob medida. (Modo Offline)";
+    } else if (t.includes('eai') || t.includes('oi') || t.includes('olá')) {
+      fallback = "Olá! Como posso tornar seu dia mais produtivo e equilibrado hoje? (Modo Offline)";
+    } else if (t.includes('quem é você')) {
+      fallback = "Eu sou o Assistente Virtual do Rotina no Controle! Estou aqui para otimizar suas tarefas e te dar dicas valiosas sobre alimentação e nutrição. (Modo Offline)";
+    }
+    appendMessage('assistant', fallback);
+  } finally {
+    assistantBusy = false;
+  }
+}
+
+/* ====================================================================
+   PWA / NOTIFICAÇÕES DO SISTEMA
+   ==================================================================== */
+let deferredInstallPrompt = null;
+
+function isStandalonePWA() {
+  return window.matchMedia?.('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+function updatePWAInstallButton() {
+  const btn = $('install-app-button');
+  if (btn) btn.classList.toggle('hidden', !deferredInstallPrompt || isStandalonePWA());
+
+  const banner = $('install-app-banner');
+  if (banner) {
+    banner.classList.toggle('hidden', isStandalonePWA());
+  }
+}
+
+function dismissInstallBanner() {
+  const banner = $('install-app-banner');
+  if (banner) banner.classList.add('hidden');
+}
+
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  updatePWAInstallButton();
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  updatePWAInstallButton();
+  showToast('Rotina no Controle foi instalado no celular.', 'success');
+});
+
+async function installPWA() {
+  if (!deferredInstallPrompt) {
+    showToast('Abra o site pelo Chrome em HTTPS para aparecer a opção de instalação.', 'info');
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  try { await deferredInstallPrompt.userChoice; } catch (e) {}
+  deferredInstallPrompt = null;
+  updatePWAInstallButton();
+}
+
+async function registerPWA() {
+  updatePWAInstallButton();
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    await navigator.serviceWorker.register('./sw.js', { scope: './' });
+  } catch (error) {
+    console.warn('PWA indisponível neste endereço:', error);
+  }
+  updatePWAInstallButton();
+}
+
+function updateNotificationStatus(permission) {
+  const status = $('notification-status');
+  const button = $('notification-permission-button');
+  if (!status || !button) return;
+  if (!('Notification' in window)) {
+    status.textContent = 'Este navegador não oferece notificações.';
+    button.classList.add('hidden');
+    return;
+  }
+  const current = permission || Notification.permission;
+  if (current === 'granted') {
+    status.textContent = 'Avisos do sistema: ativados.';
+    button.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i> Ativado';
+  } else if (current === 'denied') {
+    status.textContent = 'Avisos bloqueados. Libere as notificações nas configurações do Chrome.';
+    button.innerHTML = '<i class="fa-solid fa-bell-slash mr-1"></i> Bloqueado';
+  } else {
+    status.textContent = 'Ative os avisos para receber o som do alarme em segundo plano.';
+    button.innerHTML = '<i class="fa-solid fa-bell mr-1"></i> Ativar aviso';
+  }
+}
+
+async function requestAlarmNotificationPermission(fromUser = false) {
+  if (!('Notification' in window)) {
+    updateNotificationStatus('unsupported');
+    return;
+  }
+  try {
+    if (Notification.permission === 'default') {
+      const permission = await Notification.requestPermission();
+      updateNotificationStatus(permission);
+      if (permission === 'granted' && fromUser) {
+        showToast('Avisos do sistema ativados.', 'success');
+      }
+      return permission;
+    }
+    updateNotificationStatus(Notification.permission);
+    return Notification.permission;
+  } catch (error) {
+    updateNotificationStatus(Notification.permission);
+    return Notification.permission;
+  }
+}
+
+function notifyAlarmThroughServiceWorker(task) {
+  if (!('serviceWorker' in navigator) || !navigator.serviceWorker.controller) return;
+  try {
+    navigator.serviceWorker.controller.postMessage({
+      type: 'SHOW_ALARM',
+      title: 'Rotina no Controle',
+      body: `${task.hora} • ${task.titulo}`,
+      taskId: task.id || ''
+    });
+  } catch (e) {}
+}
+
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    const data = event.data || {};
+    if (data.type !== 'ALARM_ACTION') return;
+    if (data.action === 'stop') {
+      stopAlarm();
+      showToast('Alarme parado.', 'success');
+    } else if (data.action === 'snooze') {
+      stopAlarm();
+      const until = Number(data.snoozeAt) || (Date.now() + 5 * 60 * 1000);
+      localStorage.setItem('rotina_alarm_snooze_until', String(until));
+      showToast('Alarme adiado por 5 minutos.', 'info');
+      setTimeout(() => {
+        const current = Number(localStorage.getItem('rotina_alarm_snooze_until') || 0);
+        if (current && Date.now() >= current) {
+          localStorage.removeItem('rotina_alarm_snooze_until');
+          const sessionTask = window.__lastAlarmTask;
+          if (sessionTask) triggerAlarm(sessionTask);
+        }
+      }, Math.max(1000, until - Date.now()));
+    }
+  });
+}
+
+function applyTheme(theme) {
+  const root = document.documentElement;
+  const isLight = theme === 'light';
+  root.classList.toggle('light', isLight);
+  root.classList.toggle('dark', !isLight);
+  const icon = $('theme-icon');
+  const button = $('theme-toggle');
+  if (icon) icon.className = isLight ? 'fa-solid fa-moon text-base' : 'fa-solid fa-sun text-base';
+  if (button) {
+    button.title = isLight ? 'Ativar tema escuro' : 'Ativar tema claro';
+    button.setAttribute('aria-label', button.title);
+  }
+  const metaTheme = document.getElementById('meta-theme-color');
+  if (metaTheme) metaTheme.setAttribute('content', isLight ? '#f8fafc' : '#080b13');
+  localStorage.setItem('rotina_theme', theme);
+}
+
+function toggleTheme() {
+  const next = document.documentElement.classList.contains('light') ? 'dark' : 'light';
+  applyTheme(next);
+  showToast(next === 'light' ? 'Tema claro ativado.' : 'Tema escuro ativado.', 'info');
+}
+
+(function initTheme() {
+  const saved = localStorage.getItem('rotina_theme');
+  applyTheme(saved === 'light' ? 'light' : 'dark');
+})();
+
+window.addEventListener('DOMContentLoaded', () => {
+  registerPWA();
+  updateNotificationStatus();
+  if (currentUser) {
+    openApp();
+  } else {
+    showAuthStep('initial');
+    $('auth-screen').classList.remove('hidden');
+  }
+});
+</script>
+</body>
+</html>
